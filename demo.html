@@ -1,0 +1,184 @@
+<!doctype html>
+<html ⚡>
+<head>
+  <!-- Compulsory content -->
+    <meta charset="utf-8">
+    <title>My AMP Page</title>
+    <link rel="canonical" href="self.html" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+  <!-- /Compulsory content -->
+
+  <!-- Custom Style -->
+    <style amp-custom>
+      * {
+        outline:none;
+        font-family: sans-serif;
+      }
+      body {
+        padding: 0px;
+        margin: 0px;
+        max-width: 800px;
+      }
+      main{
+        padding: 0px;
+      }
+      header{
+        background-color: #fff;
+        box-shadow: none;
+        border-bottom: 1px solid #f3f3f3;
+        padding: 10px;
+      }
+      h1 {
+        margin: 0;
+        padding: 6px;
+        color: #202020;
+        font-size: 19px;
+        text-align: center;
+      }
+      #list {
+        overflow: scroll;
+      }
+      #news-articles {
+        padding: 6px;
+        border: 1px solid #bababa99;
+        margin: 10px;
+        background: #f2f2f2;
+      }
+      #news-articles h2{font-size: 15px;}
+      .news-article-img-container {
+        position: relative;
+        width: 200px;
+        height: 140px;
+        margin: 0 auto;
+      }
+      .news-article-img-container img {
+        object-fit: contain;
+      }
+      .country-codes {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        text-align:center;
+        margin-top: 10px;
+      }
+      .country-codes li {
+        cursor: pointer;
+        display: inline-block;
+        color: #000000;
+        border: 2px solid #000000;
+        padding: 4px;
+        margin: 4px;
+      }
+      .country-codes li.selected {
+        color: black;
+        border-color: black;
+        background: #e8e8e8;
+      }
+      #page-number-input {
+        width: 40px;
+        font-size: 19px;
+        background: #e8e8e8;
+      }
+      #credit, #credit a {
+        margin-top: 20px;
+        color: #727272;
+      }
+    </style>
+  <!-- /Custom Style -->
+
+    <!-- Includes -->
+      <script async custom-element="amp-bind" src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"></script>
+      <script async custom-element="amp-list" src="https://cdn.ampproject.org/v0/amp-list-0.1.js"></script>
+      <script async custom-template="amp-mustache" src="https://cdn.ampproject.org/v0/amp-mustache-0.1.js"></script>
+    <!-- /Includes -->
+
+</head>
+
+<body>
+  <!-- States -->
+    <amp-state id="newsApi">
+      <script type="application/json">
+        {
+          "baseURL": "https://newsapi.org/v2/top-headlines",
+          "countryParameter": "country=",
+          "countryCode": "gb",
+          "pageParameter": "pageSize=",
+          "pageNumber": "4",
+          "apiKey": "apiKey=624a81d416d24554b7969ec99bc3fa87",
+          "test": "https://powerful-slash.glitch.me/"
+        }
+      </script>
+    </amp-state>
+  <!-- /States -->
+
+  <!-- Content -->
+  <header>
+      <h1>newsAPI.org live feed</h1>
+  </header>
+
+  <main>
+
+    <!-- News Feed -->
+      <!-- Country Code Selector -->
+        <ul class="country-codes">
+          <li role="button"
+            tabindex="3"
+            class = "selected"
+            [class]="newsApi.countryCode == 'gb' ? 'selected' : ''"
+            on="tap:AMP.setState({newsApi:{countryCode: 'gb'}})">GB</li>
+          <li role="button"
+            tabindex="4"
+            class = ""
+            [class]="newsApi.countryCode == 'fr' ? 'selected' : ''"
+            on="tap:AMP.setState({newsApi:{countryCode: 'fr'}})">FR</li>
+          <li role="button"
+            tabindex="5"
+            class = ""
+            [class]="newsApi.countryCode == 'it' ? 'selected' : ''"
+            on="tap:AMP.setState({newsApi:{countryCode: 'it'}})">IT</li>
+          <li role="button"
+            tabindex="6"
+            class = ""
+            [class]="newsApi.countryCode == 'de' ? 'selected' : ''"
+            on="tap:AMP.setState({newsApi:{countryCode: 'de'}})">DE</li>
+        </ul>
+      <!-- /Country Code Selector -->
+
+      <!-- List Element -->
+        <amp-list id="list" width="auto"
+          height="400"
+          layout="fixed-height"
+          src= "https://newsapi.org/v2/top-headlines?country=gb&pageSize=4&apiKey=624a81d416d24554b7969ec99bc3fa87"
+          [src] = "newsApi.baseURL + '?' + newsApi.countryParameter + newsApi.countryCode + '&' + newsApi.pageParameter + newsApi.pageNumber + '&' + newsApi.apiKey" 
+          items="articles"
+          class="m1"
+          [height]="newsApi.pageNumber * 30">
+          <div placeholder>Loading News...</div>
+          <div fallback>Failed to load data.</div>
+          <template type="amp-mustache"
+            id="amp-template-id">
+            <a href="{{{url}}}" target="_blank"><article id="news-articles">
+              <h2>{{{title}}}</h2>
+              <div class="news-article-img-container">
+                <amp-img layout="fill"
+                  src="{{urlToImage}}{{^urlToImage}}https://storage.googleapis.com/cs-emea-assets/antoine/images/dinosaur.png{{/urlToImage}}"></amp-img>
+              </div>
+            </article></a>
+          </template>
+        </amp-list>
+      <!-- /List Element -->
+
+
+      <!-- Number of page input -->
+        <p>Show <input type="number" name="pageNumber" id="page-number-input" value="4" min="1" max="20" on="input-debounced:AMP.setState({newsApi:{pageNumber: event.value}})"> article(s)</p>
+      <!-- /Number of page input -->
+    <!-- News Feed -->
+
+    <p id="credit">News API provided by <a href="https://newsapi.org/">newsapi.org</a></p>
+  </main>
+  <!-- /Content -->
+</body>
+</html>
